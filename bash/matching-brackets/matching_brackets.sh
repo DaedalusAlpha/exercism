@@ -19,9 +19,10 @@ close () {
 main () {
     text=$1 succeed='true'
     declare -a last
-    declare -A counter=([brack]='0' [brace]='0' [paren]='0')
+    declare -A counter=(["["]='0' ["{"]='0' ["("]='0')
     for ((i = 0 ; i<${#text} ; i++)); do
-        case "${text[@]:i:1}" in
+        char="${text[@]:i:1}" 
+        case $char in
             "[") open 'brack' '[' ;;
             "{") open 'brace' '{' ;;
             "(") open 'paren' '(' ;;
