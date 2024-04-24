@@ -30,10 +30,15 @@ main () {
             modify "$2"
         ;;
         'generate')
-            abilities=(strength dexterity constitution intelligence wisdom \
-                        charisma)
-            declare -A character
-            for ability in "${abilities[@]}"; do 
+            declare -A character=(
+                [strength]=''
+                [dexterity]=''
+                [constitution]=''
+                [intelligence]=''
+                [wisdom]=''
+                [charisma]=''
+            )
+            for ability in "${!character[@]}"; do 
                 character[$ability]=$(rollDice)
                 echo "$ability" "${character[$ability]}"
             done
