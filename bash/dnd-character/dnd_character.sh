@@ -15,11 +15,12 @@ rollDice () {
 }
 
 modify () {
+    # My original version
     # mod=$(($1 - 10)) && [[ $mod -lt 0 ]] && mod=$(bc -l <<<"$mod--")
     # bc <<<"scale=0;$mod/2"
 
+    # Better version without bc. Credit: glennj on exercism dot org
     local -i n=$1
-    # a little trickery to ensure we round *down*
     ((n < 10)) && ((n--))
     echo $(((n - 10) / 2))
 }
