@@ -1,14 +1,5 @@
 #!/usr/bin/env bash
 
-# This is called each time the player rolls a ball.
-# The argument is the number of pins knocked down.
-# $1 = pins
-roll() {
- exit    
-}
-
-# This is called only at the very end of the game. It returns the total score 
-# for that game.
 score() {
     local result=0
     for i in {0..9}; do
@@ -29,49 +20,59 @@ gameOver() {
     echo "Cannot roll after game is over"; exit 1
 }
 
-frames=(0 0 0 0 0 0 0 0 0 0)
+declare -a frames=(0 0 0 0 0 0 0 0 0 0)
 rolls=( "$@" )
 frame=0
-
-[[ ${#rolls[@]} -eq 0 ]] && earlyScore
+gameComplete=false
 
 for ((i = 0 ; i < ${#rolls[@]} ; i++)); do
-    [[ ${#frames[@]} -gt 10 ]] && gameOver
     roll0="${rolls[i]}"
     [[ roll0 -lt 0 ]] && negativeRoll
     [[ roll0 -gt 10 ]] && pinCountExceeds
     if (( (i + 1) < ${#rolls[@]} )); then #NEXT ROLL
-        roll1="${rolls[$((i+1))]}"; else roll1=0; fi
+        roll1="${rolls[$((i+1))]}"
+    else roll1=X; fi
     if (( (i + 2) < ${#rolls[@]} )); then #ROLL AFTER NEXT
-        roll2="${rolls[$((i+2))]}"; else roll2=0; fi
+        roll2="${rolls[$((i+2))]}"
+    else roll2=X; fi
     [[ roll1 -gt 10 ]] && pinCountExceeds
     [[ roll2 -gt 10 ]] && pinCountExceeds
-
-    if [[ roll0 -eq 10 ]]; then # STRIKE
-        frames[frame]+=$(( roll0 + roll1 + roll2 ))
-        echo $frame "${frames[(($frame))]}"
+    
+    if [[ $roll0 -eq 10 ]]; then # STRIKE
+        [[ $roll1 = "X" || $roll2 = "X" ]] && earlyScore
+        (( frames[frame]+=roll0 + roll1 + roll2 ))
         if [[ frame -eq 9 ]]; then
+            (( roll1 < 10 && (roll1+roll2) > 10 )) && pinCountExceeds
+            [[ $((i+3)) -lt ${#rolls[@]} ]] && gameOver
+            gameComplete=true
             break
         else ((frame++))
         fi
     elif [[ $((roll0 + roll1)) -eq 10 ]]; then #SPARE
-        frames[frame]+=$(( roll0 + roll1 + roll2 ))
+        [[ $roll1 = "X" || $roll2 = "X" ]] && earlyScore
+        (( frames[frame]+=roll0 + roll1 + roll2 ))
         ((i++))
         if [[ frame -eq 9 ]]; then
-            if (( (roll2) > 10 )); then
-                pinCountExceeds
-            fi
+            (( roll2 > 10 )) && pinCountExceeds
+            [[ $((i+2)) -lt ${#rolls[@]} ]] && gameOver
+            gameComplete=true
             break
         else ((frame++))
         fi
     elif [[ $((roll0 + roll1)) -lt 10 ]]; then #OPEN
-        frames[frame]+=$(( roll0 + roll1 ))
+        [[ $roll1 = "X" ]] && earlyScore
+        (( frames[frame]+=roll0 + roll1 ))
         ((i++))
-        [[ frame -eq 9 ]] && break
+        if [[ frame -eq 9 ]]; then 
+            [[ $((i+1)) -lt ${#rolls[@]} ]] && gameOver
+            gameComplete=true
+            break
+        fi
         ((frame++))
     else pinCountExceeds
     fi
-        # echo "r0:$roll0 r1:$roll1 r2:$roll2 ${frames[(($frame-1))]} $frame"
 done
+
+[[ $# -lt 10 || ! $gameComplete ]] && earlyScore
 
 score "${frames[@]}"
