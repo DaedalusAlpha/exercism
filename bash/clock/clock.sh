@@ -1,26 +1,31 @@
 #!/usr/bin/env bash
 
-# The following comments should help you get started:
-# - Bash is flexible. You may use functions or write a "raw" script.
-#
-# - Complex code can be made easier to read by breaking it up
-#   into functions, however this is sometimes overkill in bash.
-#
-# - You can find links about good style and other resources
-#   for Bash in './README.md'. It came with this exercise.
-#
-#   Example:
-#   # other functions here
-#   # ...
-#   # ...
-#
-#   main () {
-#     # your main function code here
-#   }
-#
-#   # call main with all of the positional arguments
-#   main "$@"
-#
-# *** PLEASE REMOVE THESE COMMENTS BEFORE SUBMITTING YOUR SOLUTION ***
+die () {
+    echo "$1"
+    exit 1
+}
 
+[[ $# != 2 && $# != 4 ]] && die 'invalid arguments'
 hour="$1"
+minute="$2"
+if [[ $# = 4 ]]; then
+    operator="$3"
+    xminutes="$4"
+    if [[ $operator == "+" ]]; then
+        (( minute+=xminutes ))
+    elif [[ $operator == "-" ]]; then
+        (( minute-=xminutes ))
+    else die 'invalid arguments'
+    fi
+fi
+# echo "$hour $minute"
+
+modMin=$(( minute % 60 ))
+updatedHour=$((((minute / 60) % 12 + (hour % 24)) % 24))
+
+# echo "$modHour $divMin $modMin $updatedHour"
+
+(( modMin < 0)) && modMin=$((60+modMin)) && ((updatedHour--))
+(( updatedHour < 0 )) && updatedHour=$((24+"$updatedHour"))
+
+printf '%02d:%02d\n' $updatedHour $modMin
