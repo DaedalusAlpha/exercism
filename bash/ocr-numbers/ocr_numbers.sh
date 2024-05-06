@@ -1,49 +1,38 @@
 #!/usr/bin/env bash
 
- zero=(" _ " "| |" "|_|" "   ")
-  one=("   " "  |" "  |" "   ")
-  two=(" _ " " _|" "|_ " "   ")
-three=(" _ " " _|" " _|" "   ")
- four=("   " "|_|" "  |" "   ")
- five=(" _ " "|_ " " _|" "   ")
-  six=(" _ " "|_ " "|_|" "   ")
-seven=(" _ " "  |" "  |" "   ")
-eight=(" _ " "|_|" "|_|" "   ")
- nine=(" _ " "|_|" "  |" "   ")
+die () {
+  echo "$1"; exit 1
+}
 
+[[ -t 0 ]] && exit 0
+while IFS= read -r line; do
+  if (( ${#line} % 3 != 0)); then
+    die "Number of input columns is not a multiple of three"
+  else
+    index=0
+    for ((j=0; j<${#line}; j+=3)); do
+        number[index]+="${line:j:3}"
+        ((index++))
+      done
+    ((lineCount+=1))
+  fi
+done
 
+((lineCount % 4 != 0)) && \
+  die "Number of input lines is not a multiple of four"
 
+declare -a output
+for ((i=0; i<(lineCount / 4); i++)); do
+  for ((j=0; j<${#number[@]}; j++)); do
+    output[i]+=$( case "${number[j]:$((i*12)):12}" in
+        " _ | ||_|   ") echo 0 ;; "     |  |   ") echo 1 ;;
+        " _  _||_    ") echo 2 ;; " _  _| _|   ") echo 3 ;;
+        "   |_|  |   ") echo 4 ;; " _ |_  _|   ") echo 5 ;;
+        " _ |_ |_|   ") echo 6 ;; " _   |  |   ") echo 7 ;;
+        " _ |_||_|   ") echo 8 ;; " _ |_| _|   ") echo 9 ;;
+        *) echo '?'
+    esac )
+  done
+done
 
-# printf " _ \n| |\n|_|\n\n"  #zero
-# printf "   \n  |\n  |\n\n"  #one
-# printf " _ \n _|\n|_ \n\n"  #two
-# printf " _ \n _|\n _|\n\n"  #three
-# printf "   \n|_|\n  |\n\n"  #four
-# printf " _ \n|_ \n _|\n\n"  #five
-# printf " _ \n|_ \n|_|\n\n"  #six
-# printf " _ \n  |\n  |\n\n"  #seven
-# printf " _ \n|_|\n|_|\n\n"  #eight
-# printf " _ \n|_|\n  |\n\n"  #nine
-
-# The following comments should help you get started:
-# - Bash is flexible. You may use functions or write a "raw" script.
-#
-# - Complex code can be made easier to read by breaking it up
-#   into functions, however this is sometimes overkill in bash.
-#
-# - You can find links about good style and other resources
-#   for Bash in './README.md'. It came with this exercise.
-#
-#   Example:
-#   # other functions here
-#   # ...
-#   # ...
-#
-#   main () {
-#     # your main function code here
-#   }
-#
-#   # call main with all of the positional arguments
-#   main "$@"
-#
-# *** PLEASE REMOVE THESE COMMENTS BEFORE SUBMITTING YOUR SOLUTION ***
+echo "${output[@]}" | tr ' ' ,
