@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#fixed all indentation
+#fixed all indentation for readability
 while IFS= read -r line; do
     while true; do
         orig=$line
@@ -8,31 +8,29 @@ while IFS= read -r line; do
             pre=${BASH_REMATCH[1]} #swapped pre/post order
             post=${BASH_REMATCH[2]}
             if [[ $pre =~ ^(.*)__(.+) ]]; then
-                printf -v line "%s<strong>%s</strong>%s" "${BASH_REMATCH[1]}" \
-                "${BASH_REMATCH[2]}" "$post" #add line break for readability
+                printf -v line "%s<strong>%s</strong>%s" "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}" "$post" #add line break for readability
             fi
         fi
         [ "$line" != "$orig" ] || break
     done
 
-    echo "$line" | grep '^\*' > /dev/null 2>&1
-    if [ $? -eq 0 ]; then
-        if [ X$inside_a_list != Xyes ]; then
+    if [[ "$line" =~ ^\* ]]; then
+        if [ "$inside_a_list" != yes ]; then
             h="$h<ul>"
-            inside_a_list=yes
+            inside_a_list=yes # remove X from all inside_a_list references
         fi
 
         while [[ $line == *_*?_* ]]; do
             one=${line#*_}
             two=${one#*_}
-            if [ ${#two} -lt ${#one} -a ${#one} -lt ${#line} ]; then
-                line="${line%%_$one}<em>${one%%_$two}</em>$two"
+            if [ ${#two} -lt ${#one} ] && [ ${#one} -lt ${#line} ]; then #change -a to ] && [ and quote variables
+                line="${line%%_"$one"}<em>${one%%_"$two"}</em>$two" #fixed for SC2295
             fi
         done
         h="$h<li>${line#??}</li>"
 
     else
-        if [ X$inside_a_list = Xyes ]; then #change else/if to elif
+        if [ "$inside_a_list" = yes ]; then #change else/if to elif (maybe)
             h="$h</ul>"
             inside_a_list=no
         fi
@@ -41,8 +39,8 @@ while IFS= read -r line; do
             while [[ $line == *_*?_* ]]; do
                 s=${line#*_}
                 t=${s#*_}
-                if [ ${#t} -lt ${#s} -a ${#s} -lt ${#line} ]; then
-                    line="${line%%_$s}<em>${s%%_$t}</em>$t"
+                if [ ${#t} -lt ${#s} ] && [ ${#s} -lt ${#line} ]; then #change -a to ] && [ and quote variables
+                    line="${line%%_"$s"}<em>${s%%_"$t"}</em>$t" #fixed for SC2295
                 fi
             done
             HEAD=${line:n}
@@ -58,7 +56,7 @@ while IFS= read -r line; do
     fi
     done < "$1"
 
-if [ X$inside_a_list = Xyes ]; then
+if [ "$inside_a_list" = yes ]; then
     h="$h</ul>"
 fi
 
