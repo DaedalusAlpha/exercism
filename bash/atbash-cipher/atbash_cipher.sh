@@ -1,4 +1,4 @@
-# #!/usr/bin/env bash
+#!/usr/bin/env bash
 
 # # The following comments should help you get started:
 # # - Bash is flexible. You may use functions or write a "raw" script.
@@ -28,7 +28,7 @@
 #!/usr/bin/env bash
 
 main () {
-    result=$( tr "abcdefghijklmnopqrstuvwxyz" "zyxwvutsrqponmlkjihgfedcba" <<< ${2,,} | tr -d " .," )
+    result=$( tr "abcdefghijklmnopqrstuvwxyz" "zyxwvutsrqponmlkjihgfedcba" <<< "${2,,}" | tr -d " .," )
     [ "$1" == "encode" ] && result=$(fold -w5 <<< $result)
     echo $result
 }
