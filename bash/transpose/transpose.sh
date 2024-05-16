@@ -3,17 +3,12 @@
 IFS=$'\n' read -re -d '' -a lines
 numLines=${#lines[@]}
 
-max=-1
-for line in "${lines[@]}"; do
-    len="${#line}"
-    ((len > max)) && max="$len"
+for (( i=numLines-2; i>=0; i--)); do
+    lenNext=${#lines[i+1]}
+    lines[i]=$(printf "%-$((lenNext))s" "${lines[i]}")
 done
 
-for (( i=0; i<numLines; i++)); do
-    lines[i]=$(printf "%-$((max))s" "${lines[i]}")
-done
-
-for (( i=0; i<max; i++ )); do
+for (( i=0; i<${#lines[0]}; i++ )); do
     output=''
     for (( j=0; j<numLines; j++ )); do
         output+="${lines[j]:i:1}"
