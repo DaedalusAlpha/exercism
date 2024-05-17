@@ -54,7 +54,7 @@ bigStraight () {
 }
 
 choice () {
-    local roll=("$@") 
+    local roll=("$@")
     local total=0
     for i in "${roll[@]}"; do ((total+=i)); done
     echo "$total"
@@ -70,7 +70,7 @@ yacht () {
 }
 
 category="$1"; shift
-mapfile -t dice < <(sort <<<"$*")
+IFS=$'\n' dice=( $(sort <<<"$*") ); unset IFS
 declare -A categories
 categories["ones"]=1; categories["twos"]=2
 categories["threes"]=3; categories["fours"]=4
