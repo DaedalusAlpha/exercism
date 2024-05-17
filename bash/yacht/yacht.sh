@@ -70,7 +70,7 @@ yacht () {
 }
 
 category="$1"; shift
-IFS=$'\n' dice=( $(sort <<<"$*") ); unset IFS
+mapfile -t dice < <(sort <<<"$*")
 declare -A categories
 categories["ones"]=1; categories["twos"]=2
 categories["threes"]=3; categories["fours"]=4
