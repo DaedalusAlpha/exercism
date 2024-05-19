@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 
-n="$2"
-for (( i=1; i<=n; i++ )); do
-    (( sum_of_squares+=i**2 ))
-    (( sum+=i ))
-done
-square_of_sum=$((sum**2))
+square_of_sum=$((($2 * ($2 + 1) / 2) ** 2))
+sum_of_squares=$(($2 * ($2 + 1) * (2 * $2 + 1) / 6))
 difference=$((square_of_sum-sum_of_squares))
 
 case "$1" in
