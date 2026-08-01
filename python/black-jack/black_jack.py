@@ -18,9 +18,11 @@ def value_of_card(card):
         2.  'A' (ace card) = 1
         3.  '2' - '10' = numerical value.
     """
-
-    pass
-
+    if card in 'JQK':
+        return 10
+    if card == 'A':
+        return 1
+    return int(card)
 
 def higher_card(card_one, card_two):
     """Determine which card has a higher value in the hand.
@@ -36,9 +38,13 @@ def higher_card(card_one, card_two):
     Returns:
         str or tuple: The resulting tuple contains both cards if they are of equal value.
     """
-
-    pass
-
+    card_one_value = value_of_card(card_one)
+    card_two_value = value_of_card(card_two)
+    if card_one_value > card_two_value:
+        return card_one
+    if card_two_value > card_one_value:
+        return card_two
+    return (card_one, card_two)
 
 def value_of_ace(card_one, card_two):
     """Calculate the most advantageous value for an upcoming ace card.
@@ -54,8 +60,8 @@ def value_of_ace(card_one, card_two):
     Returns:
         int: Either 1 or 11, which is the value of the upcoming ace card.
     """
-
-    pass
+    if (card_one == 'A' or card_two == 'A') or (value_of_card(card_one) + value_of_card(card_two)) > 10: return 1
+    return 11
 
 
 def is_blackjack(card_one, card_two):
@@ -72,8 +78,7 @@ def is_blackjack(card_one, card_two):
     Returns:
         bool: Is the hand is a blackjack (two cards worth 21).
     """
-
-    pass
+    return ((value_of_card(card_one) == 1) and (value_of_card(card_two) == 10)) or ((value_of_card(card_one) == 10) and (value_of_card(card_two) == 1))
 
 
 def can_split_pairs(card_one, card_two):
@@ -83,12 +88,10 @@ def can_split_pairs(card_one, card_two):
         card_one (str): First card in the hand.
         card_two (str): Second card in the hand.
 
-   Returns:
+    Returns:
         bool: Can the hand be split into two pairs? (i.e. cards are of the same value).
     """
-
-    pass
-
+    return (card_one == card_two) or value_of_card(card_one) == value_of_card(card_two)
 
 def can_double_down(card_one, card_two):
     """Determine if a blackjack player can place a double down bet.
@@ -100,5 +103,7 @@ def can_double_down(card_one, card_two):
     Returns:
         bool: Can the hand can be doubled down? (i.e. totals 9, 10 or 11 points).
     """
-
-    pass
+    card_sum = value_of_card(card_one) + value_of_card(card_two)
+    if 8 < card_sum < 12:
+        return True
+    return False
