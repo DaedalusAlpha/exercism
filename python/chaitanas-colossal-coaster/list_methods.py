@@ -14,8 +14,11 @@ def add_me_to_the_queue(express_queue, normal_queue, ticket_type, person_name):
         list: The (updated) queue the name was added to.
     """
 
-    pass
-
+    if ticket_type:
+        express_queue.append(person_name)
+        return express_queue
+    normal_queue.append(person_name)
+    return normal_queue
 
 def find_my_friend(queue, friend_name):
     """Search the queue for a name and return their queue position (index).
@@ -28,8 +31,10 @@ def find_my_friend(queue, friend_name):
         int: The index at which the friends name was found.
     """
 
-    pass
-
+    for index, item in enumerate(queue):
+        if item == friend_name:
+            return index
+    return None
 
 def add_me_with_my_friends(queue, index, person_name):
     """Insert the late arrival's name at a specific index of the queue.
@@ -42,9 +47,8 @@ def add_me_with_my_friends(queue, index, person_name):
     Returns:
         list: The queue updated with new name.
     """
-
-    pass
-
+    queue.insert(index, person_name)
+    return queue
 
 def remove_the_mean_person(queue, person_name):
     """Remove the mean person from the queue by the provided name.
@@ -57,7 +61,8 @@ def remove_the_mean_person(queue, person_name):
         list: The queue updated with the mean persons name removed.
     """
 
-    pass
+    queue.remove(person_name)
+    return queue
 
 
 def how_many_namefellows(queue, person_name):
@@ -71,7 +76,7 @@ def how_many_namefellows(queue, person_name):
         int: The number of times the name appears in the queue.
     """
 
-    pass
+    return queue.count(person_name)
 
 
 def remove_the_last_person(queue):
@@ -84,7 +89,7 @@ def remove_the_last_person(queue):
         str: The name that has been removed from the end of the queue.
     """
 
-    pass
+    return queue.pop()
 
 
 def sorted_names(queue):
@@ -97,4 +102,5 @@ def sorted_names(queue):
         list: A copy of the queue in alphabetical order.
     """
 
-    pass
+    output = queue.copy()
+    return sorted(output)
