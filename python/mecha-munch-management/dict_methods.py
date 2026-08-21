@@ -11,9 +11,12 @@ def add_item(current_cart, items_to_add):
     Returns:
         dict: The updated user cart dictionary.
     """
-
-    pass
-
+    for item in items_to_add:
+        if item not in current_cart:
+            current_cart.setdefault(item, 1)
+        else:
+            current_cart[item] += 1
+    return current_cart
 
 def read_notes(notes):
     """Create user cart from an iterable notes entry.
@@ -24,9 +27,7 @@ def read_notes(notes):
     Returns:
         dict: A user shopping cart dictionary.
     """
-
-    pass
-
+    return dict.fromkeys(notes, 1)
 
 def update_recipes(ideas, recipe_updates):
     """Update the recipe ideas dictionary.
@@ -38,8 +39,14 @@ def update_recipes(ideas, recipe_updates):
     Returns:
         dict: The updated "recipe ideas" dict.
     """
-
-    pass
+    for update in recipe_updates:
+        
+    
+    for idea in ideas:
+        for update in recipe_updates:
+            if update[0] in ideas.keys():
+                ideas[update[0]] = recipe_updates[update]
+    return ideas
 
 
 def sort_entries(cart):
