@@ -40,12 +40,8 @@ def update_recipes(ideas, recipe_updates):
         dict: The updated "recipe ideas" dict.
     """
     for update in recipe_updates:
-        
-    
-    for idea in ideas:
-        for update in recipe_updates:
-            if update[0] in ideas.keys():
-                ideas[update[0]] = recipe_updates[update]
+        if update[0] in ideas.keys():
+            ideas[update[0]] = update[1] 
     return ideas
 
 
